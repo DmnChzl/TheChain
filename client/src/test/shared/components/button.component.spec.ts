@@ -1,30 +1,34 @@
-import { TestBed } from '@angular/core/testing';
-import { By } from '@angular/platform-browser';
 import { ButtonComponent } from '@shared/components/button';
+import { render, screen } from '@testing-library/angular';
+import userEvent from '@testing-library/user-event';
 
 describe('ButtonComponent', () => {
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
+  it('should render', async () => {
+    const { container } = await render(ButtonComponent);
+    expect(container).toBeDefined();
+  });
+
+  it('should render with content', async () => {
+    await render('<app-button>Okay</app-button>', {
       imports: [ButtonComponent],
-    }).compileComponents();
+    });
+
+    const button = screen.getByRole('button', { name: 'Okay' });
+    expect(button).toBeDefined();
   });
 
-  it('should create the component', () => {
-    const fixture = TestBed.createComponent(ButtonComponent);
-    const component = fixture.componentInstance;
-    expect(component).toBeTruthy();
-  });
+  it('should emit clicked output', async () => {
+    const user = userEvent.setup();
+    const clickedMock = vi.fn();
 
-  it('should emit clicked output', () => {
-    const fixture = TestBed.createComponent(ButtonComponent);
-    const component = fixture.componentInstance;
+    const { container } = await render(ButtonComponent, {
+      on: {
+        clicked: clickedMock,
+      },
+    });
 
-    vi.spyOn(component.clicked, 'emit');
-    fixture.detectChanges();
-
-    const button = fixture.debugElement.query(By.css('button'));
-    button.triggerEventHandler('click');
-
-    expect(component.clicked.emit).toHaveBeenCalled();
+    const [button] = container.getElementsByClassName('app-button');
+    await user.click(button);
+    expect(clickedMock).toHaveBeenCalled();
   });
 });

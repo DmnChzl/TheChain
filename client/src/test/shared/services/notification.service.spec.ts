@@ -2,17 +2,21 @@ import { TestBed } from '@angular/core/testing';
 import { NotificationService } from '@shared/services/notification.service';
 
 describe('NotificationService', () => {
+  let service: NotificationService;
+
   beforeEach(() => {
-    TestBed.configureTestingModule({});
+    TestBed.configureTestingModule({
+      providers: [NotificationService],
+    });
+
+    service = TestBed.inject(NotificationService);
   });
 
   it('should create the service', () => {
-    const service = TestBed.inject(NotificationService);
     expect(service).toBeTruthy();
   });
 
   it('should show info notification', () => {
-    const service = TestBed.inject(NotificationService);
     service.info('Lorem ipsum dolor sit amet');
 
     expect(service.notification()?.message).toEqual('Lorem ipsum dolor sit amet');
@@ -20,7 +24,6 @@ describe('NotificationService', () => {
   });
 
   it('should show success notification', () => {
-    const service = TestBed.inject(NotificationService);
     service.success('Lorem ipsum dolor sit amet');
 
     expect(service.notification()?.message).toEqual('Lorem ipsum dolor sit amet');
@@ -28,7 +31,6 @@ describe('NotificationService', () => {
   });
 
   it('should show danger notification', () => {
-    const service = TestBed.inject(NotificationService);
     service.danger('Lorem ipsum dolor sit amet');
 
     expect(service.notification()?.message).toEqual('Lorem ipsum dolor sit amet');
@@ -36,7 +38,6 @@ describe('NotificationService', () => {
   });
 
   it('should show warning notification', () => {
-    const service = TestBed.inject(NotificationService);
     service.warning('Lorem ipsum dolor sit amet');
 
     expect(service.notification()?.message).toEqual('Lorem ipsum dolor sit amet');

@@ -2,17 +2,21 @@ import { TestBed } from '@angular/core/testing';
 import { ModalService } from '@shared/services/modal.service';
 
 describe('ModalService', () => {
+  let service: ModalService;
+
   beforeEach(() => {
-    TestBed.configureTestingModule({});
+    TestBed.configureTestingModule({
+      providers: [ModalService],
+    });
+
+    service = TestBed.inject(ModalService);
   });
 
   it('should create the service', () => {
-    const service = TestBed.inject(ModalService);
     expect(service).toBeTruthy();
   });
 
   it('should open modal', () => {
-    const service = TestBed.inject(ModalService);
     service.open();
 
     expect(service.isOpen()).toBe(true);
@@ -22,7 +26,6 @@ describe('ModalService', () => {
   });
 
   it('should open modal with config', () => {
-    const service = TestBed.inject(ModalService);
     service.open({
       title: 'Lorem Ipsum',
       description: 'Lorem ipsum dolor sit amet',
@@ -38,8 +41,6 @@ describe('ModalService', () => {
   });
 
   it('should close modal', () => {
-    const service = TestBed.inject(ModalService);
-
     service.open();
     service.close();
 

@@ -7,7 +7,7 @@
     "dev": "ng serve",
     "build": "ng build",
     "build:watch": "ng build --watch --configuration development",
-    "test": "ng test",
+    "test": "ng test --ui",
     "lint": "oxlint src",
     "format": "prettier src --write"
   },
@@ -27,7 +27,9 @@
     "@angular/compiler-cli": "^21.1.0",
     "@tailwindcss/postcss": "^4.1.15",
     "@testing-library/angular": "^19.1.0",
-    "@testing-library/dom": "^10.4.1",
+    "@testing-library/jest-dom": "^6.9.0",
+    "@testing-library/user-event": "^14.6.0",
+    "@vitest/ui": "^4.0.15",
     "jsdom": "^28.0.0",
     "oxlint": "^1.43.0",
     "postcss": "^8.5.5",
@@ -35,7 +37,6 @@
     "typescript": "~5.9.3",
     "vitest": "^4.0.15"
   },
-  "packageManager": "pnpm@10.28.0",
   "license": "WTFPL",
   "private": true
 }
