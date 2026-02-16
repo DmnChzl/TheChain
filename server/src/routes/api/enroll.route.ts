@@ -7,8 +7,8 @@ const ENROLL_PATH = "/api/enroll";
 export const createEnrollRoute = (service: BlockChainService) => {
   return new Elysia({ prefix: ENROLL_PATH }).post(
     "/",
-    ({ body, set }) => {
-      const result = service.enrollFile(body);
+    async ({ body, set }) => {
+      const result = await service.enrollFile(body);
 
       if (result.isLeft()) {
         set.status = result.error.statusCode;

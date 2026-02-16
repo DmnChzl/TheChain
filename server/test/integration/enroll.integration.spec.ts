@@ -5,6 +5,12 @@ import { BlockChainService } from "../../src/domain/blockchain.service";
 import { createEnrollRoute } from "../../src/routes/api/enroll.route";
 import { FileRecord } from "../../src/routes/payloads/fileRecord";
 import { Block } from "../../src/domain/block";
+import { BlockRepository } from "../../src/infrastructure/block.repository";
+
+const mockBlockRepository = {
+  findAll: vi.fn().mockResolvedValue([]),
+  create: vi.fn(),
+} as unknown as BlockRepository;
 
 describe("POST /api/enroll", () => {
   let app: AnyElysia;
@@ -13,7 +19,7 @@ describe("POST /api/enroll", () => {
 
   beforeEach(() => {
     blockChain = new BlockChain();
-    blockChainService = new BlockChainService(blockChain);
+    blockChainService = new BlockChainService(blockChain, mockBlockRepository);
 
     app = new Elysia().use(createEnrollRoute(blockChainService));
   });

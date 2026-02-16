@@ -1,7 +1,7 @@
 export class Left<T> {
   readonly error: T;
 
-  private constructor(error: T) {
+  constructor(error: T) {
     this.error = error;
   }
 
@@ -21,7 +21,7 @@ export class Left<T> {
 export class Right<T> {
   readonly value: T;
 
-  private constructor(value: T) {
+  constructor(value: T) {
     this.value = value;
   }
 

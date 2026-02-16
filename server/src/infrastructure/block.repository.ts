@@ -1,8 +1,5 @@
-import { asc, eq } from "drizzle-orm";
 import type { BunSQLiteDatabase } from "drizzle-orm/bun-sqlite";
-import { Block } from "../domain/block";
-import type { FileRecord } from "../routes/payloads/fileRecord";
-import type { BlockSQLiteTable } from "./schema";
+import type { BlockEntity, BlockSQLiteTable } from "./database/schema";
 
 export class BlockRepository {
   #database: BunSQLiteDatabase;
@@ -13,44 +10,16 @@ export class BlockRepository {
     this.#table = table;
   }
 
-  async findAll(): Promise<Block<FileRecord>[]> {
-    const rows = await this.#database
-      .select()
-      .from(this.#table)
-      .orderBy(asc(this.#table.timestamp));
-
-    return rows.map((row) => {
-      const block = new Block<FileRecord>(
-        row.data as FileRecord,
-        row.timestamp,
-      );
-      block.hash = row.hash;
-      block.prevHash = row.prevHash;
-      return Object.freeze(block);
-    });
+  async findAll(): Promise<BlockEntity[]> {
+    return await this.#database.select().from(this.#table);
   }
 
-  async findOneByFileHash(
-    fileHash: string,
-  ): Promise<Block<FileRecord> | undefined> {
-    const [row] = await this.#database
-      .select()
-      .from(this.#table)
-      .where(eq(this.#table.data, { fileHash } as FileRecord));
-
-    if (!row) return undefined;
-    const block = new Block<FileRecord>(row.data as FileRecord, row.timestamp);
-    block.hash = row.hash;
-    block.prevHash = row.prevHash;
-    return Object.freeze(block);
-  }
-
-  async create(block: Block<FileRecord>) {
+  async create(entity: BlockEntity) {
     await this.#database.insert(this.#table).values({
-      data: block.data,
-      hash: block.hash,
-      prevHash: block.prevHash,
-      timestamp: block.timestamp,
+      data: entity.data,
+      hash: entity.hash,
+      prevHash: entity.prevHash,
+      timestamp: entity.timestamp,
     });
   }
 }

@@ -1,33 +1,35 @@
 {
-  "name": "the-chain-server",
+  "name": "chain-server",
   "version": "0.1.0",
   "description": "The BlockChain Project's Server",
+  "author": "Damien Chazoule <dmnchzl@pm.me>",
+  "repository": "https://github.com/dmnchzl/theblockchainproject.git",
   "module": "dist/index.js",
   "scripts": {
     "dev": "bun run --watch src/index.ts",
-    "build": "bun build src/index.ts --outfile dist/index.js",
+    "build": "bun build src/index.ts --outfile dist/index.js --target bun",
     "start": "bun run dist/index.js",
     "test": "vitest --ui",
     "lint": "oxlint src",
     "format": "oxfmt src",
-    "drizzle:generate": "drizzle-kit generate",
-    "drizzle:migrate": "drizzle-kit migrate"
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate",
+    "db:studio": "drizzle-kit studio"
   },
   "dependencies": {
     "@elysiajs/cors": "^1.4.0",
     "drizzle-orm": "^0.45.0",
+    "drizzle-kit": "^0.31.5",
     "elysia": "^1.4.25"
   },
   "devDependencies": {
     "@vitest/ui": "^4.0.15",
     "bun-types": "^1.3.5",
-    "drizzle-kit": "^0.31.5",
     "oxfmt": "^0.32.0",
     "oxlint": "^1.47.0",
     "typescript": "~5.9.3",
     "vitest": "^4.0.15",
     "zod": "^4.3.5"
   },
-  "private": true,
-  "license": "WTFPL"
+  "license": "MIT"
 }

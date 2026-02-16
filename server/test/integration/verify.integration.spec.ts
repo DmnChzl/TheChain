@@ -1,10 +1,16 @@
 import { AnyElysia, Elysia } from "elysia";
-import { beforeEach, describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { Block } from "../../src/domain/block";
 import { BlockChain } from "../../src/domain/blockchain";
 import { BlockChainService } from "../../src/domain/blockchain.service";
 import { createVerifyRoute } from "../../src/routes/api/verify.route";
 import { FileRecord } from "../../src/routes/payloads/fileRecord";
+import { BlockRepository } from "../../src/infrastructure/block.repository";
+
+const mockBlockRepository = {
+  findAll: vi.fn().mockResolvedValue([]),
+  create: vi.fn(),
+} as unknown as BlockRepository;
 
 describe("POST /api/verify", () => {
   let app: AnyElysia;
@@ -13,7 +19,7 @@ describe("POST /api/verify", () => {
 
   beforeEach(() => {
     blockChain = new BlockChain();
-    blockChainService = new BlockChainService(blockChain);
+    blockChainService = new BlockChainService(blockChain, mockBlockRepository);
 
     app = new Elysia().use(createVerifyRoute(blockChainService));
   });

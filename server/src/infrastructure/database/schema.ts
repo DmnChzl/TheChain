@@ -8,3 +8,4 @@ export const blockTable = sqliteTable("block", {
 });
 
 export type BlockSQLiteTable = typeof blockTable;
+export type BlockEntity = typeof blockTable.$inferSelect;

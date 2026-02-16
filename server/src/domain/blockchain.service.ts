@@ -1,3 +1,4 @@
+import type { BlockRepository } from "../infrastructure/block.repository";
 import {
   ConflictError,
   InternalServerError,
@@ -13,15 +14,45 @@ import { Block } from "./block";
 import { BlockChain } from "./blockchain";
 
 export class BlockChainService {
-  private blockChain: BlockChain<FileRecord>;
+  #chain: BlockChain<FileRecord>;
+  #repository: BlockRepository;
 
-  constructor(blockChain: BlockChain<FileRecord>) {
-    this.blockChain = blockChain;
+  constructor(chain: BlockChain<FileRecord>, repository: BlockRepository) {
+    this.#chain = chain;
+    this.#repository = repository;
+  }
+
+  async setup() {
+    const entities = await this.#repository.findAll();
+
+    if (entities.length === 0) {
+      const genesisBlock = this.#chain.getGenesisBlock();
+
+      await this.#repository.create({
+        data: genesisBlock.data,
+        hash: genesisBlock.hash,
+        prevHash: genesisBlock.prevHash,
+        timestamp: genesisBlock.timestamp,
+      });
+    } else {
+      this.#chain.blocks = entities.map((entity) => {
+        const block = new Block<FileRecord>(
+          entity.data as FileRecord,
+          entity.timestamp,
+        );
+
+        block.prevHash = entity.prevHash;
+        block.hash = entity.hash;
+
+        // This Is Immutability
+        return Object.freeze(block);
+      });
+    }
   }
 
   getBlockChainState(): Either<StatusError, BlockChainState<FileRecord>> {
     try {
-      const blocks = this.blockChain.blocks.map((block, index) => ({
+      const blocks = this.#chain.blocks.map((block, index) => ({
         index,
         data: block.data,
         hash: block.hash,
@@ -31,8 +62,8 @@ export class BlockChainService {
 
       return Right.create({
         blocks,
-        isValid: this.blockChain.isValid(),
-        totalBlocks: this.blockChain.getBlockCount(),
+        isValid: this.#chain.isValid(),
+        totalBlocks: this.#chain.getBlockCount(),
       });
     } catch (error) {
       return Left.create(new InternalServerError((error as Error).message));
@@ -43,8 +74,8 @@ export class BlockChainService {
     index: number;
     block: Block<FileRecord> | undefined;
   } {
-    for (let i = 0; i < this.blockChain.blocks.length; i++) {
-      const block = this.blockChain.blocks[i];
+    for (let i = 0; i < this.#chain.blocks.length; i++) {
+      const block = this.#chain.blocks[i];
       if (!block) {
         throw new Error(`Corrupted BlockChain (Index: ${i})`);
       }
@@ -56,7 +87,9 @@ export class BlockChainService {
     return { index: -1, block: undefined };
   }
 
-  enrollFile(record: FileRecord): Either<StatusError, EnrollmentResult> {
+  async enrollFile(
+    record: FileRecord,
+  ): Promise<Either<StatusError, EnrollmentResult>> {
     try {
       const { block: existingBlock } = this.#findBlock(record.fileHash);
 
@@ -65,13 +98,20 @@ export class BlockChainService {
       }
 
       const newBlock = new Block<FileRecord>(record, new Date().getTime());
-      this.blockChain.addNewBlock(newBlock);
+      this.#chain.addNewBlock(newBlock);
+
+      await this.#repository.create({
+        data: newBlock.data,
+        hash: newBlock.hash,
+        prevHash: newBlock.prevHash,
+        timestamp: newBlock.timestamp,
+      });
 
       return Right.create({
         blockHash: newBlock.hash,
-        blockIndex: this.blockChain.getBlockCount() - 1,
+        blockIndex: this.#chain.getBlockCount() - 1,
         timestamp: newBlock.timestamp,
-        totalBlocks: this.blockChain.getBlockCount(),
+        totalBlocks: this.#chain.getBlockCount(),
       });
     } catch (error) {
       return Left.create(new InternalServerError((error as Error).message));
@@ -80,7 +120,7 @@ export class BlockChainService {
 
   verifyFile(fileHash: string): Either<StatusError, VerificationResult> {
     try {
-      const isChainValid = this.blockChain.isValid();
+      const isChainValid = this.#chain.isValid();
       const { block, index: blockIndex } = this.#findBlock(fileHash);
 
       if (!block) {

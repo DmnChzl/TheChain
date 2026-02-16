@@ -18,6 +18,10 @@ services:
     restart: unless-stopped
     ports:
       - "3000:3000"
+    volumes:
+      - ./server/data:/app/data
+    environment:
+      - DATABASE_URL=/app/data/db.sqlite
     networks:
       - app-network
 
