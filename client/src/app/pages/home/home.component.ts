@@ -29,8 +29,8 @@ export class HomePageComponent implements OnInit {
 
   openModalWithConfig() {
     this.modalService.open({
-      title: 'Use Private Chain ?',
-      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi vitae mi sapien',
+      title: 'Use Private Chain',
+      description: 'Do you wanna use the application in private mode/in a secure way?',
     });
   }
 
