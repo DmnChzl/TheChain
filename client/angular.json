@@ -7,7 +7,7 @@
   },
   "newProjectRoot": "projects",
   "projects": {
-    "the-block-chain-project": {
+    "the-blockchain-project": {
       "projectType": "application",
       "schematics": {},
       "root": "",
@@ -55,10 +55,10 @@
           "builder": "@angular/build:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "the-block-chain-project:build:production"
+              "buildTarget": "the-blockchain-project:build:production"
             },
             "development": {
-              "buildTarget": "the-block-chain-project:build:development"
+              "buildTarget": "the-blockchain-project:build:development"
             }
           },
           "defaultConfiguration": "development",

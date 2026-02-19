@@ -60,7 +60,7 @@ export function isDocument(fileName: string): boolean {
   return DOC_EXTENSIONS.includes(ext);
 }
 
-const IMG_EXTENSIONS = ['.avif', '.gif', '.jpg', '.jpeg', '.png', '.svg', '.webp'];
+const IMG_EXTENSIONS = ['.avif', '.gif', '.jpeg', '.jpg', '.png', '.svg', '.webp'];
 
 /**
  * Check if the File is an Image

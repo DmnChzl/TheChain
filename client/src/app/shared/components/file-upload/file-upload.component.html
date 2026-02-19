@@ -11,5 +11,5 @@
   </div>
   <p class="dropzone__description">{{ description() }}</p>
   <button class="dropzone__button" type="button" (click)="fileInput.click()">Browser File</button>
-  <input #fileInput type="file" hidden (change)="onFileSelected($event)" />
+  <input #fileInput type="file" hidden (change)="onFileSelected($event)" [accept]="acceptedFiles()" />
 </div>

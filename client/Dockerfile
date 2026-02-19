@@ -11,7 +11,7 @@ RUN bun run build
 # Stage 2: Serve with Nginx
 FROM nginx:alpine AS runner
 
-COPY --from=builder /app/dist/the-block-chain-project/browser /usr/share/nginx/html
+COPY --from=builder /app/dist/the-blockchain-project/browser /usr/share/nginx/html
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 EXPOSE 80

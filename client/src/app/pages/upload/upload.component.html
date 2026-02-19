@@ -27,7 +27,13 @@
       />
 
       <div class="h-full w-full p-10">
-        <app-file-upload description="Drag & Drop to Upload File or" (fileSelected)="handleFileSelected($event)" />
+        <app-file-upload
+          description="Drag & Drop to Upload File or"
+          (fileSelected)="handleFileSelected($event)"
+          [allowedExtensions]="['.csv', '.jpeg', '.jpg', '.png', '.md', '.pdf', '.txt', '.svg']"
+          [maxSize]="10"
+          (invalidated)="notifyInvalidFile($event)"
+        />
       </div>
     </div>
 

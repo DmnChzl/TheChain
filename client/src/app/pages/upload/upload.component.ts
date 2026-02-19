@@ -1,11 +1,11 @@
 import { Component, computed, effect, inject, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
-import { NotificationComponent } from '@shared/components/notification';
-import { BlockChainService } from '@shared/services/blockchain.service';
 import { FileUploadComponent } from '@shared/components/file-upload';
 import { DiamondIconComponent } from '@shared/components/icons';
+import { NotificationComponent } from '@shared/components/notification';
 import { MainLayoutComponent } from '@shared/layouts/main';
+import { BlockChainService } from '@shared/services/blockchain.service';
 import { NotificationService } from '@shared/services/notification.service';
 import { BlockChainWidgetComponent } from './components/blockchain-widget';
 import { FileInfoComponent } from './components/file-info';
@@ -92,27 +92,8 @@ export class UploadPageComponent {
       },
     });
   }
-}
 
-/*
-export class UploadPageComponent implements OnInit {
-  mode: 'public' | 'private' = 'public';
-
-  constructor(
-    private route: ActivatedRoute,
-    private router: Router,
-  ) {}
-
-  ngOnInit() {
-    this.route.queryParams.subscribe((params) => {
-      const queryMode = params['mode'];
-
-      if (queryMode === 'public' || queryMode === 'private') {
-        this.mode = queryMode;
-      } else {
-        this.router.navigate(['/']);
-      }
-    });
+  notifyInvalidFile(message: string) {
+    this.notificationService.danger(message);
   }
 }
-*/
